@@ -1,0 +1,179 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;500;700&display=swap');
+
+:root {
+    --water-light: #8ecae6;
+    --water: #36a7c4;
+    --water-dark: #023047;
+    --honey: #FFB703;
+    --orange: #FB8500;
+    --blue: #1985A1;
+    --coral-black: #4C5C68;
+    --Gray: #46494C;
+    --Silver: #C5C3C6;
+    --Gainsbourg: #DCDCDD;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: 'Comfortaa', cursive;
+}
+
+body {
+    background-color: var(--Gainsbourg);
+    display: flex;    
+    flex-direction: column;
+}
+
+nav {
+    height: 75px;
+}
+
+.container-grid {
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    grid-gap: .5rem;
+}
+ 
+.shipsInventory {
+    background-color: var(--Silver);
+    border: 1px solid var(--coral-black);
+    grid-area:5/14/7/17;
+    display:grid;
+    padding: 1rem;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5,1fr);
+    column-gap: .1rem;
+    row-gap: .1rem;
+}
+.shipsInventory::before {
+    content: 'Inventory';
+    position: absolute;
+    font-size: .9em;
+    color: var(--water-dark);
+    transform: 
+        translateY(-16px)
+        translateX(-10px);
+
+}
+
+.shipsInventory > div {
+    background-color: var(--water);
+
+}
+
+.playerBoard {
+    background-color: var(--blue);
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    border-radius: 33px;
+    grid-area: 2/4/8/11;
+    transition: all 500ms ease-in-out;
+    column-gap: .2rem;
+    row-gap: .2rem;
+    border: 1px solid var(--water-dark);
+    cursor:pointer;
+}
+
+.playerBoard > div {
+    background-color: var(--water);
+    transition: transform 150ms, background-color 150ms;
+}
+.playerBoard > div:hover {
+    background-color: var(--water-light);
+    transform: scale(.9);
+    transition: transform 150ms, background-color 150ms;
+}
+.playerBoard > div:active {
+    background-color: var(--Gainsbourg);
+    transform: scale(1.25);
+    transition: transform 100ms, background-color 200ms;
+}
+
+.shipsBoard {
+    border-radius: 15px;
+    background-color: var(--Gray);
+    display: grid;
+    grid-area: 1/12/5/17;
+    padding: 1rem;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 5vmin);
+    column-gap: .1rem ;
+    row-gap: .1rem;
+    
+}
+.shipsBoard > div {
+    background-color: var(--coral-black);
+}
+
+.computerInfos {
+    grid-area: 2/17/6/21;
+    border-top: 1px solid var(--Gray);
+    border-bottom: 1px solid var(--Gray);
+    height:375px;
+    overflow: auto;
+    padding: 1em 1em;
+    background-color: #cccccce0;
+}
+
+
+
+.container-grid > button {
+    font-family: 'Comfortaa', cursive;
+    font-weight: 700;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 20px;
+    transition: color 400ms;
+    margin-top: 5px;
+    padding: 1em 1.5em;
+}
+
+#start {
+    background-color: var(--orange);
+    color: var(--water-dark);
+    grid-area: 5/11/6/14;
+    align-self: center;
+    justify-self: center;
+
+}
+#start:hover {
+    background-color: var(--water-dark);
+    backdrop-filter: sepia(1);
+    color: var(--orange);
+    transition: all 400ms;
+    cursor: pointer;
+}
+
+#rules {
+    background-color: var(--water-dark);
+    color: var(--honey);
+    grid-area: 6/11/7/14;
+    align-self: center;
+    justify-self: center;
+
+}
+#rules:hover {
+    background-color: var(--honey);
+    backdrop-filter: sepia(1);
+    color: var(--water-dark);
+    transition: all 400ms;
+    cursor: pointer;
+}
+
+nav {
+    background-color: whitesmoke;
+}
+
+.ship {
+    border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
+    border: solid var(--Gray) 1px;
+    cursor: grab;
+}
