@@ -82,6 +82,19 @@ nav {
     cursor:pointer;
 }
 
+.playerBoard > div.shooting {
+    background-color: var(--orange);
+    animation: rotate-center 1.8s linear infinite both;
+}
+@keyframes rotate-center {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
 .playerBoard > div {
     background-color: var(--water);
     transition: transform 150ms, background-color 150ms;
@@ -97,6 +110,8 @@ nav {
     transition: transform 100ms, background-color 200ms;
 }
 
+
+
 .shipsBoard {
     border-radius: 15px;
     background-color: var(--Gray);
@@ -104,8 +119,8 @@ nav {
     grid-area: 1/12/5/17;
     padding: 1rem;
     grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(10, 5vmin);
-    column-gap: .1rem ;
+    grid-template-rows: repeat(10, 1fr);
+    column-gap: .1rem;
     row-gap: .1rem;
     
 }
@@ -167,13 +182,29 @@ nav {
     transition: all 400ms;
     cursor: pointer;
 }
+#randomizer {
+    grid-area: 1/11/2/12;
+    align-self: center;
+    justify-content: center;
+    color: var(--orange);
+    background-color: var(--water-dark);
+    padding: .5em;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 1.2em;
+}
 
 nav {
     background-color: whitesmoke;
 }
 
-.ship {
+.invShips {
     border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
     border: solid var(--Gray) 1px;
     cursor: grab;
 }
+
+.shipsBoard .ship {
+    background-color: var(--honey);
+}
+
