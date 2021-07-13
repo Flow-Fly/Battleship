@@ -16,20 +16,23 @@
     </header>
     <div class="container-grid">
         
-        <div class="shipsInventory"></div>
+        <div class="recap">
+            <h4>Computer:</h4>
+            <p>Hits: <span id="compHits"></span></p>
+            <p>Miss: <span id="compMiss"></span></p>
+            <p>Remaining ships: <span id="compShips"></span></p>
+            <h4>Player:</h4>
+            <p>Hits: <span id="playHits"></span></p>
+            <p>Miss: <span id="playMiss"></span></p>
+            <p>Remaining ships: <span id="playShips"></span></p>
+
+        </div>
         <div id="randomizer"><i class="fas fa-random"></i></div>
         <div class="playerBoard"></div>
         <div class="shipsBoard dropzone" dropzone="move"></div>
-        <div class="computerInfos">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Blanditiis quam dolores tenetur neque in fuga non soluta tempore mollitia ipsam explicabo iure, unde quo sapiente excepturi hic ratione corrupti iusto.
-        Dolores fugiat tempore odit error ut exercitationem impedit nesciunt, maxime ea quam eaque consectetur. Commodi, nobis. Modi, nobis, minima molestiae expedita a illo quae quis fugiat, animi amet adipisci maxime?
-        Tenetur delectus natus dolor sapiente, voluptatibus dolorem ipsum, amet cum ad eligendi alias corrupti quo commodi consequuntur quae iusto laboriosam et cupiditate blanditiis vitae nostrum rerum, sed labore? Optio, in.
-        Sunt quisquam atque soluta veniam? Voluptatum tempore qui odit at vitae quisquam neque fugit consequatur. Et cumque numquam delectus consequuntur dicta voluptatibus similique aspernatur. Quidem quo rem minus perspiciatis animi!
-        Perferendis ipsum doloremque est nesciunt ducimus! Totam maxime maiores laborum ex vel sed numquam quos quis? Facilis totam veritatis ducimus amet praesentium eum autem unde. Iure dolorum sunt veritatis sint.
-        Voluptatibus nihil assumenda praesentium? Perspiciatis provident laudantium minima aliquid maiores quam quia, accusamus reiciendis ab doloremque a, at, ea voluptatum temporibus suscipit? Praesentium veniam, dolorum facilis dolor debitis nobis amet?
-        Corporis ipsa quisquam quod dolores, provident a neque dignissimos quo repellendus fugiat facilis dolorem. Molestiae, error dolorum! Velit illo et repudiandae exercitationem, quis, quidem aperiam aspernatur perspiciatis expedita fugit quod.
-        Sapiente ab eum aliquam, sequi illo optio quibusdam commodi consectetur, nobis quis placeat voluptate hic aut, facilis eligendi cum qui ipsa. Pariatur nostrum in itaque fugit, nobis unde saepe illum!</div>
+        <div id="computerInfos"></div>
 
-
+        <button id="fire">Fire!</button>
         <button id="start">Start Playing!</button>
         <button id="rules">Rules</button>
     </div>
