@@ -1,6 +1,5 @@
 import {Ship, BattleShips, Field} from '../modules/classes.js'
 
-
 const playerBoard = document.querySelector('.playerBoard')
 const shipsBoard = document.querySelector('.shipsBoard')
 const start = document.getElementById('start')
@@ -14,13 +13,9 @@ const compShips = document.getElementById('compShips')
 const playHits = document.getElementById('playHits')
 const playMiss = document.getElementById('playMiss')
 const playShips = document.getElementById('playShips')
-let dragged = null
+
 fireBtn.disabled = true
 
-
-
-//start.onclick = generateShips('playerArmy') 
-//console.log(playerBoard)
 const computerField = new Field
 const playerField = new Field
 const computerShips = new BattleShips
@@ -33,24 +28,21 @@ const gameState = {
     playerMiss: 0,
     computerMiss: 0       
 }
+initialisation()
 
 
-gameSetup()
-generateInventory()
-
-/* dragNDrop() */
 
 
-randomlyPlaceShips(playerShips, playerField)
-//randomlyPlaceShips(computerShips, computerField)
-console.log(computerField.field)
-paintShips()
-
-start.onclick = () => {
-    randomBtn.onclick = () => {}
-    mainGame()
+function initialisation() {
+    gameSetup()
+    generateInventory()
+    randomlyPlaceShips(playerShips, playerField)
+    paintShips()
+    start.onclick = () => {
+        randomBtn.onclick = () => {}
+        mainGame()
+    }
 }
-
 
 function mainGame() {
     const turn = gameState.turn % 2 === 0 ? 'computer' : 'player'
@@ -61,13 +53,22 @@ function mainGame() {
         waitForX(playerShips.army.length, turn, computerField.field)
         
     } else {
-        if (computerField.hits.length === 0) {
+        console.log(computerField.hits.size)
+        if (computerField.hits.size === 0) {
             const shots = computerField.randomShot(computerShips.army.length)
             fire(turn, playerField.field, shots)
         } else {
-            
+            if (computerField.hits.size === 1) {
+                search() 
+            }
+        
         }
     }
+}
+
+function search() {
+    const hit = [...computerField.hits]
+    console.log(hit)
 }
 
 function pickShots() {
@@ -107,6 +108,7 @@ function waitForX(remainingShips, turn, field) {
 
 function fire(turn, field, shots) {
     if (turn === 'player') {
+        fireBtn.disabled = true
         playerBoard.querySelectorAll('.shooting').forEach(cell => {
             cell.classList.remove('shooting')
             cell.classList.add('shot', 'locked')
@@ -149,7 +151,7 @@ function endTurn(turn) {
     playHits.textContent = gameState.playerHits
     playMiss.textContent = gameState.playerMiss
     playShips.textContent = playerShips.army.length
-    console.log(gameState)
+    
 
     gameState.turn += 1
     mainGame()
@@ -276,7 +278,12 @@ function itsAShip(turn, cell, field) {
                 ship.health -= 1
                 infos.innerHTML += `<p>${turn} hit ${ship.name} on cell ${x} - ${y}<p/>`
                 //Incrementing counters depending of who played
-                turn === 'player' ? gameState.playerHits += 1 : gameState.computerHits += 1
+                if(turn === 'player') {
+                    gameState.playerHits += 1
+                } else {
+                    gameState.computerHits += 1
+                    computerField.hits.add({'x': x, 'y': y})
+                } 
             }
         })
         return true
