@@ -96,6 +96,7 @@ nav {
     }
   }
 
+  
 .playerBoard > div {
     background-color: var(--water);
     transition: transform 150ms, background-color 150ms;
