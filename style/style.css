@@ -128,6 +128,21 @@ nav {
 .shipsBoard > div {
     background-color: var(--coral-black);
 }
+.shipsBoard > div.Carrier {
+    background-color:chocolate;
+}
+.shipsBoard > div.Battleship {
+    background-color: goldenrod;
+}
+.shipsBoard > div.Destroyer {
+    background-color: var(--honey);
+}
+.shipsBoard > div.Submarine {
+    background-color: var(--blue);
+}
+.shipsBoard > div.PatrolBoat {
+    background-color: hotpink;
+}
 
 .shipsBoard > div.hit {
     background-color: rgb(161, 18, 18);
@@ -235,13 +250,13 @@ nav {
     cursor: grab;
 }
 
-.shipsBoard .ship {
-    background-color: var(--honey);
-}
-
 .playerBoard > .hit {
     background-color: rgb(161, 18, 18)!important;
 }
 .playerBoard > .miss {
     background-color: rgb(196, 253, 253)!important;
+}
+
+.sank {
+    color: var(--water);
 }
