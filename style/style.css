@@ -96,7 +96,7 @@ nav {
     }
   }
 
-  
+
 .playerBoard > div {
     background-color: var(--water);
     transition: transform 150ms, background-color 150ms;
@@ -133,7 +133,7 @@ nav {
     background-color:chocolate;
 }
 .shipsBoard > div.Battleship {
-    background-color: goldenrod;
+    background-color: rgb(22, 163, 22);
 }
 .shipsBoard > div.Destroyer {
     background-color: var(--honey);
