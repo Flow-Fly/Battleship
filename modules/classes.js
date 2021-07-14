@@ -4,6 +4,10 @@ export class Ship {
     this.length = length;
     this.health = length;
     this.power = 1;
+    this.x = null
+    this.xMax = null
+    this.y = null
+    this.yMax = null
   }
 }
 
@@ -30,9 +34,10 @@ export class BattleShips {
 export class Field {
   constructor() {
     this.field = Array(10).fill().map(() => Array(10).fill())
-    this.moveMades = new Set
-    this.randomPossibleMoves = new Set
-    this.hits = new Set
+    this.moveMades = []
+    this.randomPossibleMoves = []
+    this.hits = []
+    this.possibleHits = []
   }
 
   createField(bool) {
@@ -61,11 +66,11 @@ export class Field {
     for (let i = 0; i < 10; i++) {
       if (i % 2 === 0) {
         for (let j = 1; j < 10; j += 2) {
-          this.randomPossibleMoves.add({x: i, y: j})
+          this.randomPossibleMoves.push({x: i, y: j})
         }
       } else {
         for (let j = 0; j < 10; j += 2) {
-          this.randomPossibleMoves.add({x: i, y: j})
+          this.randomPossibleMoves.push({x: i, y: j})
         }
       }
       
@@ -75,12 +80,11 @@ export class Field {
   randomShot(num) {
     const shots = []
     for (let i = 0; i < num; i++) {
-      let shot = Array.from(this.randomPossibleMoves);
-      const index = Math.floor(Math.random() * shot.length);
-      if (!this.moveMades.has(shot[index])) {
-        shot = shot[index];
-        this.randomPossibleMoves.delete(shot)
-        this.moveMades.add(shot)
+      const index = Math.floor(Math.random() * this.randomPossibleMoves.length);
+      if (!this.moveMades.includes(this.randomPossibleMoves[index])) {
+        const shot = this.randomPossibleMoves[index];
+        this.randomPossibleMoves.splice(index,1)
+        this.moveMades.push(shot)
         shots.push(shot)
       } else {
         randomShot(num)

@@ -21,23 +21,29 @@ const playerField = new Field
 const computerShips = new BattleShips
 const playerShips = new BattleShips
 
-const gameState = {
+let gameState = {
     turn: 1,
     playerHits: 0,
     computerHits: 0,
     playerMiss: 0,
     computerMiss: 0       
 }
+
 initialisation()
 
-
-
-
 function initialisation() {
+    gameState = {
+        turn: 1,
+        playerHits: 0,
+        computerHits: 0,
+        playerMiss: 0,
+        computerMiss: 0       
+    }
     gameSetup()
     generateInventory()
     randomlyPlaceShips(playerShips, playerField)
     paintShips()
+    console.log(computerField.field)
     start.onclick = () => {
         randomBtn.onclick = () => {}
         mainGame()
@@ -51,24 +57,120 @@ function mainGame() {
     if(turn === 'player') {
         pickShots()
         waitForX(playerShips.army.length, turn, computerField.field)
-        
     } else {
-        console.log(computerField.hits.size)
-        if (computerField.hits.size === 0) {
-            const shots = computerField.randomShot(computerShips.army.length)
+        let shots = null
+        let num = null
+        if (computerField.hits.length === 0) {
+            shots = computerField.randomShot(computerShips.army.length)
             fire(turn, playerField.field, shots)
         } else {
-            if (computerField.hits.size === 1) {
-                search() 
+            [shots, num] = search() 
+            if (shots.length === computerShips.army.length) {
+                fire(turn, playerField.field, shots)
+            } else {
+                shots = shots.concat(computerField.randomShot(computerShips.army.length - num))
+                fire(turn, playerField.field, shots)
             }
-        
+            /* if (computerField.hits.length === 1) {
+                [shots, num] = search() 
+            } else {
+                shots = linkShots()
+            }
+            if (shots === undefined) {
+                shots = computerField.randomShot(computerShips.army.length)
+            }
+            if (shots.length === computerShips.army.length) {
+                fire(turn, playerField.field, shots)
+            } else {
+                shots = shots.concat(computerField.randomShot(computerShips.army.length - num))
+                fire(turn, playerField.field, shots)
+            } */
         }
     }
 }
+/* 
+function linkShots() {
+    let hits = computerField.hits
+    const xHits = []
+    const yHits = []
+    hits.forEach((hit, index, hits) => {
+       for (let i = index + 1; i < hits.length + (-index - 1); i++) {
+           let yMax = Math.max(hit.y, hits[i].y)
+           let yMin = Math.min(hit.y, hits[i].y)
+           let xMax = Math.max(hit.x, hits[i].x)
+           let xMin = Math.min(hit.x, hits[i].x)
+           let longestBoat = 0
+           longestBoat = playerShips.army.forEach(ship => {
+               if (ship.length > longestBoat) {
+                   longestBoat = ship.length
+               }
+           })
+           if (hit.x === hits[i].x && (yMax - yMin) <= longestBoat) {
+               for(let j = 0; j < longestBoat; j++) {
+                   const cell = shipsBoard.querySelector(`[x="${hit.x}"][y="${yMin + j}"]`)
+                   if (!cell.classList.contains('hit') && !cell.classList.contains('miss')) {
+                       xHits.push({'x': hit.x ,'y': yMin + j})
+                   }
+               }
+           }
+           if (hit.y === hits[i].y && (xMax - xMin) <= longestBoat) {
+            for(let j = 0; j < longestBoat; j++) {
+                const cell = shipsBoard.querySelector(`[x="${xMin + j}"][y="${hit.y}"]`)
+                if (!cell.classList.contains('hit') && !cell.classList.contains('miss')) {
+                    yHits.push({'x': xMin + j ,'y': hit.y})
+                }
+            }
+        }
+       }
+   })
+   let shots = xHits.concat(yHits)
+   if (shots.length > 0) {
+    while(shots.length > 5) {
+        shots.pop()
+     }
+     return shots
+   } else {
+    search()
+   }
+} */
 
 function search() {
-    const hit = [...computerField.hits]
-    console.log(hit)
+    const hit = computerField.hits[0]
+    let counter = 0;
+    const shots = []
+    computerField.hits.forEach(hit => {
+        const x = hit.x
+        const y = hit.y
+        for (let i = Math.max(x - 1, 0); i < Math.min(x + 2, 10); i++) {
+            for (let j = Math.max(y - 1, 0); j < Math.min(y + 2, 10); j++) {
+                if (i === x && j === y) continue
+                if ((i === 0 || i === (x - 1)) && (j === 0 || j === (y - 1))) continue
+                if ((i === 0 || i === (x - 1)) && (j === 9 || j === (y + 1))) continue
+                if ((i === 9 || i === (x + 1)) && (j === 0 || j === (y - 1))) continue
+                if ((i === 9 || i === (x + 1)) && (j === 9 || j === (y + 1))) continue
+                const cell = shipsBoard.querySelector(`[x="${i}"][y="${j}"]`)
+                //console.log(cell)
+                if (!cell.classList.contains('hit') && !cell.classList.contains('miss')) {
+                    counter += 1
+                    shots.push({'x':i,'y':j})
+                }
+            }
+        }
+    })
+    for (let i = shots.length - 1; i >= 0; i--) {
+        let index = Math.floor(Math.random() * i)
+        if (shots[i] === shots[index]) continue
+        let tmp = shots[i]
+        shots[i] = shots[index]
+        shots[index] = tmp
+    }
+    while (shots.length > 5) {
+        shots.pop()
+    }
+    /* let tmp = hit
+    computerField.hits[0] = computerField.hits[computerField.hits.length - 1]
+    computerField.hits[computerField.hits.length - 1] = tmp */
+    return [shots, counter]
 }
 
 function pickShots() {
@@ -92,10 +194,15 @@ function pickShots() {
 function waitForX(remainingShips, turn, field) {
     let intervalId = setInterval(() => {
         const cells = playerBoard.querySelectorAll('.shooting')
-        console.log(`remaining ships: ${remainingShips}, shots: ${cells.length}`)
-        if (cells.length >= remainingShips) {
+        //console.log(`remaining ships: ${remainingShips}, shots: ${cells.length}`)
+        if (cells.length === remainingShips) {
             playerBoard.querySelectorAll('.water').forEach(cell => {
                 cell.classList.add('locked')
+            })
+            playerBoard.querySelectorAll('.shooting').forEach(cell => {
+                cell.onclick = () => {
+                    cell.classList.toggle('shooting')
+                }
             })
             fireBtn.disabled = false
             fireBtn.onclick = () => {
@@ -109,27 +216,23 @@ function waitForX(remainingShips, turn, field) {
 function fire(turn, field, shots) {
     if (turn === 'player') {
         fireBtn.disabled = true
-        playerBoard.querySelectorAll('.shooting').forEach(cell => {
-            cell.classList.remove('shooting')
-            cell.classList.add('shot', 'locked')
-        })
         playerBoard.querySelectorAll('.water.locked').forEach(cell => {
             cell.classList.remove('locked')
         })
-        playerBoard.querySelectorAll('.shot').forEach(cell => {
-            if (itsAShip(turn, cell, field)) {
-                cell.classList.add('hit')
+        playerBoard.querySelectorAll('.shooting').forEach(cell => {
+            cell.classList.remove('shooting')
+            if (itsAShip(turn, cell, field, computerShips.army)) {
+                cell.classList.add('hit', 'locked')
             } else {
-                cell.classList.add('miss')
+                cell.classList.add('miss', 'locked')
             }
         })
         
     } else {
         shots.forEach(shot => {
-            const x = shot.x
-            const y = shot.y
-            const cell = shipsBoard.querySelector(`[x="${x}"][y="${y}"]`)
-            if (itsAShip(turn, shot, field)) {
+            
+            const cell = shipsBoard.querySelector(`[x="${shot.x}"][y="${shot.y}"]`)
+            if (itsAShip(turn, shot, field, playerShips.army)) {
                 cell.classList.add('hit')
             } else {
                 cell.classList.add('miss')
@@ -141,9 +244,9 @@ function fire(turn, field, shots) {
 
 function endTurn(turn) {
     gameState.playerHits = playerBoard.querySelectorAll('.hit').length
-    gameState.computerHits = playerField.totalHits
+    gameState.computerHits = shipsBoard.querySelectorAll('.hit').length
     gameState.playerMiss = playerBoard.querySelectorAll('.miss').length
-    gameState.computerMiss = playerField.totalMiss
+    gameState.computerMiss = shipsBoard.querySelectorAll('.miss').length
     turn === 'player' ? sinkShip(turn, computerShips) : sinkShip(turn, playerShips)
     compHits.textContent = gameState.computerHits
     compMiss.textContent = gameState.computerMiss
@@ -151,15 +254,23 @@ function endTurn(turn) {
     playHits.textContent = gameState.playerHits
     playMiss.textContent = gameState.playerMiss
     playShips.textContent = playerShips.army.length
-    
-
+    if (endgame()) {
+        reset(turn)
+    }
     gameState.turn += 1
     mainGame()
 }
 
+function endgame() {
+    return gameState.computerHits === 17 || gameState.playerHits === 17
+}
+
+function reset(turn) {
+    displayWin(turn)
+    someBtn.onclick = initialisation()
+}
 
 function generateInventory() {
-    
     //Create the ship board layout
     for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) { 
@@ -193,11 +304,14 @@ function gameSetup() {
     generateShips(playerShips)
     generateShips(computerShips)
 
-
     randomlyPlaceShips(computerShips, computerField)
+    
     randomBtn.onclick = () => {
         playerField.createField()
-        shipsBoard.querySelectorAll('.ship').forEach(ship => ship.classList.replace('ship', 'empty'))
+        shipsBoard.querySelectorAll('.ship').forEach(ship => {
+            ship.className = ''
+            ship.classList.add('empty')
+        })
         randomlyPlaceShips(playerShips, playerField)
         paintShips()
     }
@@ -236,6 +350,10 @@ function randomlyPlaceShips(army, field) {
             for (let i = 0; i < ship.length; i++) {
                 field.field[x + i][y].ship = true
                 field.field[x + i][y].name = ship.name
+                ship.x = x
+                ship.xMax = x + ship.length
+                ship.y = y
+                ship.yMax = y
             }
         } else {
             //same logic on y axis.
@@ -244,7 +362,6 @@ function randomlyPlaceShips(army, field) {
                 x = Math.floor(Math.random() * (10))
                 y = Math.floor(Math.random() * (10 - ship.length))
                 for (let i = 0; i < ship.length; i++) {
-
                     if (!field.field[x][y + i].ship) {
                         counter += 1
                     }
@@ -253,12 +370,16 @@ function randomlyPlaceShips(army, field) {
             for (let i = 0; i < ship.length; i++) {
                 field.field[x][y + i].ship = true
                 field.field[x][y + i].name = ship.name
+                ship.x = x
+                ship.xMax = x
+                ship.y = y
+                ship.yMax = y + ship.length
             }
         }
     })   
 }
 
-function itsAShip(turn, cell, field) {
+function itsAShip(turn, cell, field, army) {
     let x = null
     let y = null
     //Assign x,y depending of who is playing.
@@ -272,20 +393,16 @@ function itsAShip(turn, cell, field) {
     //result to true if there is a ship (set in randomlyPlaceShips())
     if (field[x][y].ship) {
         const name = field[x][y].name
-        computerShips.army.forEach(ship => {
-            if (ship['name'] === name) {
-                //decrement health of hitted ship
-                ship.health -= 1
-                infos.innerHTML += `<p>${turn} hit ${ship.name} on cell ${x} - ${y}<p/>`
-                //Incrementing counters depending of who played
-                if(turn === 'player') {
-                    gameState.playerHits += 1
-                } else {
-                    gameState.computerHits += 1
-                    computerField.hits.add({'x': x, 'y': y})
-                } 
-            }
-        })
+        let ship = army.filter(ship => ship['name'] === name)
+        ship[0].health -= 1
+        infos.innerHTML += `<p>${turn} hit ${ship[0].name} on cell ${x} - ${y}<p/>`
+        //Incrementing counters depending of who played
+        if(turn === 'player') {
+            gameState.playerHits += 1
+        } else {
+            gameState.computerHits += 1
+            computerField.hits.push({'x': x, 'y': y, 'name': ship[0].name})
+        }
         return true
     } else {
         turn === 'player' ? gameState.playerMiss += 1 : gameState.computerMiss += 1
@@ -294,18 +411,43 @@ function itsAShip(turn, cell, field) {
 }
 
 function sinkShip(turn, army) {
-    const toSink = []
-    if (turn === 'player') {  
-        for (let i = army.army.length - 1; i >= 0; i--) {
-            /* console.log(computerShips.army)
-            console.log(computerShips.army[i]) */
-            if (army.army[i]['health'] === 0) {
-                infos.innerHTML += `<p>${turn} sank ${army.army[i].name}</p>`
-                toSink.push(army.army.splice(i,1))
+    for (let i = army.army.length - 1; i >= 0; i--) {
+        /* console.log(computerShips.army)
+        console.log(computerShips.army[i]) */
+        if (army.army[i]['health'] === 0) {
+            infos.innerHTML += `<h3 class="sank">${turn} sank ${army.army[i].name}</h3>`
+            
+            if (turn === 'computer') {
+                /* let x  = computerShips.army[i].x
+                let xMax = computerShips.army[i].xMax
+                let y = computerShips.army[i].y
+                let yMax = computerShips.army[i].yMax
+                x === xMax ? eraseFromHits('x', x, 'y', y, yMax) : eraseFromHits('y', y, 'x', x, xMax) */
+                const toErase = []
+                computerField.hits.forEach((hit, index) => {
+                    if (hit.name === army.army[i].name) {
+                        toErase.push(index)
+                    }
+                })
+                if (toErase.length > 0) {
+                    toErase.forEach(index => computerField.hits.splice(index, 1))
+                }
             }
+
+            army.deadShips.push(army.army.splice(i,1))
         }
     }
 }
+
+/* function eraseFromHits(baseRef, base, axe, value, maxValue) {
+    for (let i = computerField.hits.length - 1; i >= 0; i--) {
+        if (computerField.hits[i][baseRef] === base) {
+            if (computerField.hits[i][axe] <= maxValue || computerField.hits[i][axe] >= value) {
+                computerField.hits.splice(i, 1)
+            }
+        }
+    }
+} */
 
 function paintShips() {
     for (let i = 0; i < 10; i++) {
@@ -314,6 +456,7 @@ function paintShips() {
             if (cell.ship) {
                 const paintedShip = shipsBoard.querySelector(`[x="${i}"][y="${j}"]`)
                 paintedShip.classList.replace('empty', 'ship')
+                paintedShip.classList.add(`${playerField.field[i][j].name}`)
             }
         }
     }
