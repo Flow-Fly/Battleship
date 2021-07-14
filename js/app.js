@@ -262,6 +262,7 @@ function endTurn(turn) {
   playHits.textContent = gameState.playerHits;
   playMiss.textContent = gameState.playerMiss;
   playShips.textContent = playerShips.army.length;
+  infos.scrollTop = infos.scrollHeight
   if (endgame()) {
     reset(turn);
   }
