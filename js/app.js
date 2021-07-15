@@ -26,11 +26,9 @@ const playerField = new Field();
 const computerShips = new BattleShips();
 const playerShips = new BattleShips();
 
-//Main screen rules Button handling
-rulesBtn.onclick = () => {
-  rulesPage.classList.toggle('display')
-  start.classList.toggle('display')
-}
+
+//To the person that will read this code, I'm learning to be cleaner, sorry.
+ 
 
 let gameState = {
   turn: 1,
@@ -39,9 +37,53 @@ let gameState = {
   playerMiss: 0,
   computerMiss: 0,
 };
-//Mainscreen
+
 stroboscopic()
 
+// Main Screen function.
+function stroboscopic(){
+  //Create and append the divs for the playerField (game screen)
+  let map = playerField.createField(true);
+  map.forEach((cell) => {
+    playerBoard.appendChild(cell);
+  });
+  //Create and... 
+  computerField.createField(false);
+  //...append the divs for the ShipsField (top right Screen)
+  generateInventory()
+
+  const divs = document.querySelectorAll('.empty, .water')
+
+  let intervalId = setInterval(() => {
+    divs.forEach(div => {
+      div.style.backgroundColor = randomBackgroundColor()
+    })
+  },200)
+
+
+function randomBackgroundColor() {
+  const r = Math.floor(Math.random() * 255)
+  const g = Math.floor(Math.random() * 255)
+  const b = Math.floor(Math.random() * 255)
+  return `rgb(${r}, ${g}, ${b})`
+}
+
+  start.onclick = () => {
+    clearInterval(intervalId)
+    mainBlur.classList.toggle('blur')
+    start.classList.toggle('display')
+    rulesBtn.classList.toggle('display')
+    playerBoard.innerHTML = '';
+    shipsBoard.innerHTML = '';
+    gameInitialisation();
+  }
+}
+
+//Main screen rules Button handling
+rulesBtn.onclick = () => {
+  rulesPage.classList.toggle('display')
+  start.classList.toggle('display')
+}
 
 
 function gameInitialisation() {
@@ -54,57 +96,35 @@ function gameInitialisation() {
     playerMiss: 0,
     computerMiss: 0,
   };
+  //Reset recap values to the new gameState
   updateGSandRecap()
-  
+  //Refill the shipBoard and playerBoard with new cells
   gameSetup();
   generateInventory();
+  //Imposing atleast one random generation.
   randomlyPlaceShips(playerShips, playerField);
   paintShips();
-  //console.log(computerField.field);
+  
   startGame.onclick = () => {
     randomBtn.onclick = () => {};
     startGame.style.visibility = 'hidden'
     randomBtn.style.visibility = 'hidden'
+    //Main repeating logic until the game is finished.
     mainGame();
   };
 }
 
-function stroboscopic(){
-  let map = playerField.createField(true);
-  map.forEach((cell) => {
-    playerBoard.appendChild(cell);
-  });
-  computerField.createField(false);
-  generateInventory()
-
-  const divs = document.querySelectorAll('.empty, .water')
-
-  let intervalId = setInterval(() => {
-    divs.forEach(div => {
-      div.style.backgroundColor = randomBackgroundColor()
-    })
-  },200)
-  divs.forEach(div => {
-    div.style.backgroundColor = randomBackgroundColor()
-
-  })
-
-  start.onclick = () => {
-    clearInterval(intervalId)
-    mainBlur.classList.toggle('blur')
-    start.style.visibility = 'hidden'
-    rulesBtn.style.visibility = 'hidden'
-    playerBoard.innerHTML = '';
-    shipsBoard.innerHTML = '';
-    gameInitialisation();
-  }
-}
-
-function randomBackgroundColor() {
-  const r = Math.floor(Math.random() * 255)
-  const g = Math.floor(Math.random() * 255)
-  const b = Math.floor(Math.random() * 255)
-  return `rgb(${r}, ${g}, ${b})`
+function updateGSandRecap() {
+  gameState.playerHits = playerBoard.querySelectorAll(".hit").length;
+  gameState.computerHits = shipsBoard.querySelectorAll(".hit").length;
+  gameState.playerMiss = playerBoard.querySelectorAll(".miss").length;
+  gameState.computerMiss = shipsBoard.querySelectorAll(".miss").length;
+  compHits.textContent = gameState.computerHits;
+  compMiss.textContent = gameState.computerMiss;
+  compShips.textContent = computerShips.army.length;
+  playHits.textContent = gameState.playerHits;
+  playMiss.textContent = gameState.playerMiss;
+  playShips.textContent = playerShips.army.length;
 }
 
 function gameSetup() {
@@ -113,16 +133,18 @@ function gameSetup() {
     playerBoard.appendChild(cell);
   });
   computerField.createField(false);
+  //Generate the computer "random moves"
   computerField.randomMoves();
 
   generateShips(playerShips);
   generateShips(computerShips);
-  
 
   randomlyPlaceShips(computerShips, computerField);
-  //Cheat engine :
-  console.log(computerField.field)
+  //Cheat to rapidly test game behaviour
+  //console.log(computerField.field)
+
   randomBtn.onclick = () => {
+    //Randomly place new ships.
     playerField.createField();
     shipsBoard.querySelectorAll(".ship").forEach((ship) => {
       ship.className = "";
@@ -133,6 +155,8 @@ function gameSetup() {
   };
 }
 
+//The name is confusing, It was used to create the Drag and Drop
+//Inventory and the shipBoard layout. Kept the name as a reminder.
 function generateInventory() {
   //Create the ship board layout
   for (let i = 0; i < 10; i++) {
@@ -146,7 +170,7 @@ function generateInventory() {
     }
   }
 }
-
+//Generate player/computer ships
 function generateShips(str) {
   str.addShip(new Ship("Carrier", 5));
   str.addShip(new Ship("Battleship", 4));
@@ -157,8 +181,9 @@ function generateShips(str) {
 
 function mainGame() {
   const turn = gameState.turn % 2 === 0 ? "computer" : "player";
-  //console.log(turn);
+  
   infos.innerHTML += `<br><p>Turn ${gameState.turn}:</p><h3>It's ${turn}'s turn!</h3><br>`;
+  //Scroll down the infos div
   infos.scrollTop = infos.scrollHeight
   if (turn === "player") {
     pickShots();
@@ -167,13 +192,18 @@ function mainGame() {
     let shots = null;
     let num = null;
     if (computerField.hits.length === 0) {
+      //Generate X shots based on the available ships.
       shots = computerField.randomShot(computerShips.army.length);
+      //Computer shot on the playerField his shots
       fire(turn, playerField.field, shots);
     } else {
+      //Search for potential targets around a hit.
+      //num is a tad useless as I could just use the shots length but my brain decided differently.
       [shots, num] = search();
       if (shots.length === computerShips.army.length) {
         fire(turn, playerField.field, shots);
       } else {
+        //Fill the missing spots with random shots.
         shots = shots.concat(
           computerField.randomShot(computerShips.army.length - num)
         );
@@ -207,12 +237,13 @@ function search() {
         !cell.classList.contains("target")
       ) {
         counter += 1;
+        //Adding a class to prevent multiple selections of the same cell
         cell.classList.add("target");
         shots.push({ x: i, y: j });
       }
     }
   });
-  //Mixing the avaiable shots
+  //Mixing the available shots to spread
   for (let i = shots.length - 1; i >= 0; i--) {
     let index = Math.floor(Math.random() * i);
     if (shots[i] === shots[index]) continue;
@@ -227,22 +258,24 @@ function search() {
   return [shots, counter];
 }
 
+//allow shot picking
 function pickShots() {
   infos.innerHTML += `<p>Set up to ${playerShips.army.length} shots!</p>`;
   playerBoard.querySelectorAll(".water").forEach((cell) => {
     cell.onclick = () => {
+      //I thought This would prevent me from shooting on previous shot cells
+      //But it does not. 
       if (!cell.classList.contains("locked")) {
           cell.classList.remove("water");
           cell.classList.add("shooting");
-        
-      } /* else if (cell.classList.contains("shooting")) {
-        cell.classList.remove("shooting");
-        cell.classList.add("water");
-      } */
+      }
     };
   });
 }
-
+// This is probably a pretty messy / bad implementation
+// Check every 50ms the number of clicked cells. 
+// When X (based on the remaining ships) cells have been choosen
+//Give the ability to fire / cancel cells.
 function waitForX(remainingShips, turn, field) {
   let intervalId = setInterval(() => {
     const cells = playerBoard.querySelectorAll(".shooting");
@@ -269,6 +302,7 @@ function waitForX(remainingShips, turn, field) {
   }, 50);
 }
 
+//Fire on each cells shot \o/
 function fire(turn, field, shots) {
   document
     .querySelectorAll(".target")
@@ -280,6 +314,8 @@ function fire(turn, field, shots) {
     });
     playerBoard.querySelectorAll(".shooting").forEach((cell) => {
       cell.classList.remove("shooting");
+      
+      //BackBone logic
       if (itsAShip(turn, cell, field, computerShips.army)) {
         cell.classList.add("hit", "locked");
       } else {
@@ -298,18 +334,55 @@ function fire(turn, field, shots) {
   }
   endTurn(turn);
 }
-function updateGSandRecap() {
-  gameState.playerHits = playerBoard.querySelectorAll(".hit").length;
-  gameState.computerHits = shipsBoard.querySelectorAll(".hit").length;
-  gameState.playerMiss = playerBoard.querySelectorAll(".miss").length;
-  gameState.computerMiss = shipsBoard.querySelectorAll(".miss").length;
-  compHits.textContent = gameState.computerHits;
-  compMiss.textContent = gameState.computerMiss;
-  compShips.textContent = computerShips.army.length;
-  playHits.textContent = gameState.playerHits;
-  playMiss.textContent = gameState.playerMiss;
-  playShips.textContent = playerShips.army.length;
+//Check if the curren cell is a ship
+function itsAShip(turn, cell, field, army) {
+  let x = null;
+  let y = null;
+  //Assign x,y depending of who is playing.
+  if (turn === "player") {
+    x = cell.getAttribute("x");
+    y = cell.getAttribute("y");
+  } else {
+    x = cell.x;
+    y = cell.y;
+  }
+  //result to true if there is a ship (set in randomlyPlaceShips())
+  if (field[x][y].ship) {
+    const name = field[x][y].name;
+    //Find the ship object 
+    let ship = army.find((ship) => ship.name === name);
+    ship.health -= 1;
+    infos.innerHTML += `<p>${turn} hit ${ship.name} on cell ${x} - ${y}<p/>`;
+    if (turn === 'computer') {
+      updateComputerMoves(x, y)
+    }
+    //Incrementing counters depending of who played
+    if (turn === "player") {
+      gameState.playerHits += 1;
+    } else {
+      gameState.computerHits += 1;
+      //Add the hit to the knowledge
+      computerField.hits.push({ x: x, y: y, name: ship.name });
+    }
+    return true;
+  } else {
+    turn === "player"
+      ? (gameState.playerMiss += 1)
+      : gameState.computerMiss += 1 
+        updateComputerMoves(x,y);
+    return false;
+  }
 }
+
+function updateComputerMoves(a, b) {
+  //Update available moves
+  computerField.randomPossibleMoves = computerField.randomPossibleMoves.filter(cell => {
+    if (cell.x !== a || cell.y !== b) {
+      return cell
+    }
+  })
+}
+
 function endTurn(turn) {
   updateGSandRecap()
   turn === "player"
@@ -323,10 +396,9 @@ function endTurn(turn) {
     mainGame();
   }
 }
-
+//
 function reset(turn) {
-  console.log('In the function')
-  console.log(turn)
+  //Display who won and give the possibility to play again
   replayGame.style.visibility = 'visible'
   mainBlur.classList.toggle('blur')
   document.querySelector('.won').style.visibility = 'visible'
@@ -340,15 +412,14 @@ function reset(turn) {
     mainBlur.querySelector('.won').style.visibility = 'hidden'
     replayGame.style.visibility = 'hidden'
     mainBlur.classList.toggle('blur')
-    randomBtn.style.visibility = 'visible'
-    startGame.style.visibility = 'visible'
+    randomBtn.classList.toggle('display')
+    startGame.classList.toggle('display')
     playerBoard.innerHTML = '';
     shipsBoard.innerHTML = '';
     playerShips.reset()
     computerShips.reset()
     computerField.reset()
     computerField.reset()
-
 
     gameInitialisation();
   }
@@ -385,9 +456,7 @@ function randomlyPlaceShips(army, field) {
         field.field[x + i][y].ship = true;
         field.field[x + i][y].name = ship.name;
         ship.x = x;
-        ship.xMax = x + ship.length;
-        ship.y = y;
-        ship.yMax = y;
+        ship.y = y;   
       }
     } else {
       //same logic on y axis.
@@ -405,65 +474,15 @@ function randomlyPlaceShips(army, field) {
         field.field[x][y + i].ship = true;
         field.field[x][y + i].name = ship.name;
         ship.x = x;
-        ship.xMax = x;
         ship.y = y;
-        ship.yMax = y + ship.length;
       }
     }
   });
 }
 
-function itsAShip(turn, cell, field, army) {
-  let x = null;
-  let y = null;
-  //Assign x,y depending of who is playing.
-  if (turn === "player") {
-    x = cell.getAttribute("x");
-    y = cell.getAttribute("y");
-  } else {
-    x = cell.x;
-    y = cell.y;
-  }
-  //result to true if there is a ship (set in randomlyPlaceShips())
-  if (field[x][y].ship) {
-    const name = field[x][y].name;
-    let ship = army.find((ship) => ship.name === name);
-    //console.log('player: ',turn,' Field: ', field[x][y], ' ship: ', ship)
-    ship.health -= 1;
-    infos.innerHTML += `<p>${turn} hit ${ship.name} on cell ${x} - ${y}<p/>`;
-    if (turn === 'computer') {
-      updateComputerMoves(x, y)
-    }
-    //Incrementing counters depending of who played
-    if (turn === "player") {
-      gameState.playerHits += 1;
-    } else {
-      gameState.computerHits += 1;
-      //Add the hit to the knowledge
-      computerField.hits.push({ x: x, y: y, name: ship.name });
-    }
-    return true;
-  } else {
-    turn === "player"
-      ? (gameState.playerMiss += 1)
-      : gameState.computerMiss += 1 
-        updateComputerMoves(x,y);
-    return false;
-  }
-}
-
-function updateComputerMoves(a, b) {
-  computerField.randomPossibleMoves = computerField.randomPossibleMoves.filter(cell => {
-    if (cell.x !== a || cell.y !== b) {
-      return cell
-    }
-  })
-}
-
 function sinkShip(turn, army) {
   for (let i = army.army.length - 1; i >= 0; i--) {
-    /* console.log(computerShips.army)
-        console.log(computerShips.army[i]) */
+  
     if (army.army[i].health === 0) {
       infos.innerHTML += `<h3 class="sank">${turn} sank ${army.army[i].name}</h3>`;
       if (turn === "computer") {

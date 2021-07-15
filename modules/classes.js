@@ -5,9 +5,7 @@ export class Ship {
     this.health = length;
     this.power = 1;
     this.x = null
-    this.xMax = null
     this.y = null
-    this.yMax = null
   }
 }
 
@@ -20,10 +18,13 @@ export class BattleShips {
     this.army.length < 5
       ? this.army.push(ship)
       : console.error(`You already have ${this.army.length} ships!`);
+      //This error proved useful once during development so.. Here it is.
   }
-  totalPower() {
+  //Used to make a focused shot (5 shots on a full hp carrier === 1 shot)
+  //Not implemented
+  /* totalPower() {
       return this.army.reduce((acc, val) => acc + val.power ,0)
-  }
+  } */
   reset() {
     this.army = []
     this.deadShips = []
@@ -84,12 +85,16 @@ export class Field {
   randomShot(num) {
     const shots = []
     for (let i = 0; i < num; i++) {
+
       const index = Math.floor(Math.random() * this.randomPossibleMoves.length);
+
       if (!this.moveMades.includes(this.randomPossibleMoves[index])) {
+
         const shot = this.randomPossibleMoves[index];
         this.randomPossibleMoves.splice(index,1)
         this.moveMades.push(shot)
         shots.push(shot)
+        
       } else {
         this.randomShot(num)
       }

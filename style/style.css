@@ -31,8 +31,13 @@ body {
     justify-content: center;
     width: 100vw;
     height: 100vh;
+    /*
+    Wonderful image found on Dribble.
+    https://dribbble.com/shots/15552227-Tribute-to-KRI-Nanggala-402
+    */
     background-image: url('../img/backscreen.png');
     background-position: bottom;
+    background-repeat: no-repeat;
 }
 
 h1 {
@@ -50,7 +55,7 @@ h1 {
 
 .container-grid {
     display: grid;
-    grid-template-columns: repeat(20, 1fr);
+    grid-template-columns: repeat(21, 1fr);
     grid-template-rows: repeat(7, 1fr);
     grid-gap: .5rem;
     max-width: 1920px;
@@ -232,7 +237,7 @@ h1 {
     cursor: pointer;
 }
 
-#start.display {
+.display {
     visibility: hidden;
 }
 
@@ -252,6 +257,7 @@ h1 {
     transition: all 400ms;
     cursor: pointer;
 }
+
 #randomizer {
     grid-area: 2/11/3/12;
     align-self: center;
@@ -273,28 +279,36 @@ h1 {
 #fire {
     grid-area: 7/12/8/12;
     align-self: start;
-    padding: .5em 1em;
+    justify-self: center;
     cursor: pointer;
     font-weight: 700;
+    background-color: rgb(48, 48, 48);
+    padding: .3em;
+    border-radius: 15px;
+    text-align: center;
     color:rgb(251, 255, 0);
     font-size: 1.8em;
     transition: all 500ms;
+    border: 1px solid black;
 }
+
+#fire::before {
+    content: 'Fire!';
+    position: absolute;
+    color:rgb(243, 92, 65);
+    transform: translateY(-40px) translateX(-15px);
+}
+
 #fire:hover {
-    background-color: rgb(255, 38, 0);
+    color: red;
+    animation: vibrate-3 0.5s linear infinite both;
+    box-shadow: 0px 0px 7px var(--honey);
 }
+
+
 #fire:active {
     background-color: black;
     color: red;
-}
-#fire::before {
-    content: 'Clickety click';
-   position: absolute;
-    color: rgba(255, 255, 255, 0.596);
-    font-size: .7em;
-    transform-origin: center;
-    transform: translateX(-75px) rotate(-25deg) translateY(-15px);
-
 }
 
 .invShips {
