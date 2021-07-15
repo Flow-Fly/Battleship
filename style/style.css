@@ -333,7 +333,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    grid-area: 1/1/11/21;
+    grid-area: 1/1/11/22;
     backdrop-filter: blur(8px);
     transition: visibility 1s;
     visibility: visible;
