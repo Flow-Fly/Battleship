@@ -17,7 +17,13 @@
     
     <div class="container-grid">
         <h1>Battleshiiip!</h1>
+            
         <div id="main">
+            <div class="won">
+                <h2><span class="winnerTurn"></span> won the game!</h2>
+                <p class="messageEnd"></p>
+                <div id="replayGame"><i class="far fa-play-circle"></i></div>
+            </div>
             <div class="rules">
                 <img src="./img/follow-simple-rules-you-must.jpg" alt="Yoda explaining the Rules.">
                 <ul>
@@ -40,12 +46,13 @@
 
         </div>
         <div id="randomizer"><i class="fas fa-random"></i></div>
+        <div id="startGame"><i class="far fa-play-circle"></i></div>
         <div class="playerBoard"></div>
         <div class="shipsBoard dropzone" dropzone="move"></div>
         <div id="computerInfos"></div>
 
         <button id="fire"><i class="fas fa-bomb"></i> </button>
-        <button id="start">Start Playing!</button>
+        <button id="start">I'm ready!</button>
         <button id="rules">Rules</button>
     </div>
   

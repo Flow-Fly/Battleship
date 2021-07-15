@@ -87,7 +87,7 @@ export class Field {
         this.moveMades.push(shot)
         shots.push(shot)
       } else {
-        randomShot(num)
+        this.randomShot(num)
       }
     }
     return shots

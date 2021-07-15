@@ -14,9 +14,10 @@ const playHits = document.getElementById("playHits");
 const playMiss = document.getElementById("playMiss");
 const playShips = document.getElementById("playShips");
 const rulesBtn = document.getElementById('rules');
-const rulesPage = document.querySelector('.rules')
-const mainBlur = document.getElementById('main')
-
+const rulesPage = document.querySelector('.rules');
+const mainBlur = document.getElementById('main');
+const startGame = document.getElementById('startGame');
+const replayGame = document.getElementById('replayGame')
 fireBtn.disabled = true;
 
 const computerField = new Field();
@@ -51,8 +52,10 @@ function gameInitialisation() {
   randomlyPlaceShips(playerShips, playerField);
   paintShips();
   //console.log(computerField.field);
-  start.onclick = () => {
+  startGame.onclick = () => {
     randomBtn.onclick = () => {};
+    startGame.style.visibility = 'hidden'
+    randomBtn.style.visibility = 'hidden'
     mainGame();
   };
 }
@@ -169,7 +172,6 @@ function mainGame() {
 }
 
 function search() {
-  const hit = computerField.hits[0];
   let counter = 0;
   const shots = [];
   computerField.hits.forEach((hit) => {
@@ -177,7 +179,10 @@ function search() {
     const y = hit.y;
     const xValues = [-1, 0, 0, 1];
     const yValues = [0, -1, 1, 0];
-
+    //Getting the 'cross section' cells around the hit
+    //      | X |
+    // | X ||hit|| X |
+    //      | X |
     for (let values = 0; values < 4; values++) {
       let i = x + xValues[values];
       let j = y + yValues[values];
@@ -195,6 +200,7 @@ function search() {
       }
     }
   });
+  //Mixing the avaiable shots
   for (let i = shots.length - 1; i >= 0; i--) {
     let index = Math.floor(Math.random() * i);
     if (shots[i] === shots[index]) continue;
@@ -205,9 +211,7 @@ function search() {
   while (shots.length > 5) {
     shots.pop();
   }
-  /* let tmp = hit
-    computerField.hits[0] = computerField.hits[computerField.hits.length - 1]
-    computerField.hits[computerField.hits.length - 1] = tmp */
+ 
   return [shots, counter];
 }
 
@@ -216,14 +220,13 @@ function pickShots() {
   playerBoard.querySelectorAll(".water").forEach((cell) => {
     cell.onclick = () => {
       if (!cell.classList.contains("locked")) {
-        if (!cell.classList.contains("shooting")) {
           cell.classList.remove("water");
           cell.classList.add("shooting");
-        }
-      } else if (cell.classList.contains("shooting")) {
+        
+      } /* else if (cell.classList.contains("shooting")) {
         cell.classList.remove("shooting");
         cell.classList.add("water");
-      }
+      } */
     };
   });
 }
@@ -246,6 +249,10 @@ function waitForX(remainingShips, turn, field) {
         clearInterval(intervalId);
         fire(turn, field);
       };
+    } else {
+      playerBoard.querySelectorAll(".water").forEach((cell) => {
+        cell.classList.remove("locked");
+      });
     }
   }, 50);
 }
@@ -271,9 +278,9 @@ function fire(turn, field, shots) {
     shots.forEach((shot) => {
       const cell = shipsBoard.querySelector(`[x="${shot.x}"][y="${shot.y}"]`);
       if (itsAShip(turn, shot, field, playerShips.army)) {
-        cell.classList.add("hit");
+        cell.classList.add("hit", "locked");
       } else {
-        cell.classList.add("miss");
+        cell.classList.add("miss", "locked");
       }
     });
   }
@@ -295,6 +302,7 @@ function endTurn(turn) {
   playMiss.textContent = gameState.playerMiss;
   playShips.textContent = playerShips.army.length;
   infos.scrollTop = infos.scrollHeight
+  console.log('Computer avaiable moves: ',computerField.randomPossibleMoves)
   if (endgame()) {
     reset(turn);
   }
@@ -307,10 +315,25 @@ function endgame() {
 }
 
 function reset(turn) {
-  displayWin(turn);
-  someBtn.onclick = initialisation();
+  mainBlur.classList.toggle('blur')
+  mainBlur.querySelector('.won').visibility = 'visible'
+  mainBlur.querySelector('.won .winnerTurn').textContent = turn
+  if (turn === 'player') {
+    mainBlur.querySelector('.won .messageEnd').textContent = 'Congratulations!\nDo you want to play again?'
+  } else {
+    mainBlur.querySelector('.won .messageEnd').textContent = 'Better luck next time!'
+  }
+  replayGame.onclick = () => {
+    mainBlur.querySelector('.won').visibility = 'hidden'
+    replayGame.style.visibility = 'hidden'
+    mainBlur.classList.toggle('blur')
+    randomBtn.style.visibility = 'visible'
+    startGame.style.visibility = 'visible'
+    playerBoard.innerHTML = '';
+    shipsBoard.innerHTML = '';
+    gameInitialisation();
+  }
 }
-
 
 function randomlyPlaceShips(army, field) {
   army["army"].forEach((ship) => {
@@ -386,9 +409,11 @@ function itsAShip(turn, cell, field, army) {
   if (field[x][y].ship) {
     const name = field[x][y].name;
     let ship = army.find((ship) => ship.name === name);
-    if (ship.health !== undefined) {
-      ship.health -= 1;
-      infos.innerHTML += `<p>${turn} hit ${ship.name} on cell ${x} - ${y}<p/>`;
+    console.log('player: ',turn,' Field: ', field[x][y], ' ship: ', ship)
+    ship.health -= 1;
+    infos.innerHTML += `<p>${turn} hit ${ship.name} on cell ${x} - ${y}<p/>`;
+    if (turn === 'computer') {
+      updateComputerMoves(x, y)
     }
     //Incrementing counters depending of who played
     if (turn === "player") {
@@ -402,9 +427,18 @@ function itsAShip(turn, cell, field, army) {
   } else {
     turn === "player"
       ? (gameState.playerMiss += 1)
-      : (gameState.computerMiss += 1);
+      : gameState.computerMiss += 1 
+        updateComputerMoves(x,y);
     return false;
   }
+}
+
+function updateComputerMoves(a, b) {
+  computerField.randomPossibleMoves = computerField.randomPossibleMoves.filter(cell => {
+    if (cell.x !== a || cell.y !== b) {
+      return cell
+    }
+  })
 }
 
 function sinkShip(turn, army) {
