@@ -310,13 +310,16 @@ function endTurn(turn) {
  
   if (computerShips.army.length === 0 || playerShips.army.length === 0) {
     reset(turn);
+  } else {
+    gameState.turn += 1;
+    mainGame();
   }
-  gameState.turn += 1;
-  mainGame();
 }
 
 function reset(turn) {
   console.log('In the function')
+  console.log(turn)
+  replayGame.style.visibility = 'visible'
   mainBlur.classList.toggle('blur')
   document.querySelector('.won').style.visibility = 'visible'
   document.querySelector('.won .winnerTurn').textContent = turn

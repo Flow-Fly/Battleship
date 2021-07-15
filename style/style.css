@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Yellowtail&display=swap');
 
 :root {
-    --water-light: #8ecae6;
+    --water-light: rgb(196, 253, 253);
     --water: #36a7c4;
     --water-dark: #023047;
     --honey: #FFB703;
@@ -180,7 +180,7 @@ h1 {
 }
 
 .shipsBoard > div.miss {
-    background-color: rgb(152, 190, 226);
+    background-color: var(--water-light);
 }
 
 #computerInfos {
@@ -297,7 +297,7 @@ h1 {
     background-color: rgb(161, 18, 18);
 }
 .playerBoard > .miss {
-    background-color: rgb(196, 253, 253);
+    background-color: var(--water-light);
 }
 
 .sank {
