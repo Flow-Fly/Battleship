@@ -13,17 +13,28 @@
     <header>
         <nav></nav>
     </header>
+
+    
     <div class="container-grid">
-        <div class="" id="endGame">
-            <button id="restart"></button>
+        <h1>Battleshiiip!</h1>
+        <div id="main">
+            <div class="rules">
+                <img src="./img/follow-simple-rules-you-must.jpg" alt="Yoda explaining the Rules.">
+                <ul>
+                    <li><i class="fas fa-ship"></i> You are the leader of 5 ships</li>
+                    <li><i class="fas fa-ship"></i> You can shot once per ship every turn!</li>
+                    <li><i class="fas fa-ship"></i> <span class="hit">Red</span> is a hit, <span class="miss">White</span> is a miss</li>
+                    <li><i class="fas fa-ship"></i> Your can randomize the placement of your ships!</li>
+                </ul>
+            </div>
         </div>
         <div class="recap">
             <h4>Computer:</h4>
-            <p>Hits: <span id="compHits"></span></p>
+            <p>Hit: <span id="compHits"></span></p>
             <p>Miss: <span id="compMiss"></span></p>
             <p>Remaining ships: <span id="compShips"></span></p>
             <h4>Player:</h4>
-            <p>Hits: <span id="playHits"></span></p>
+            <p>Hit: <span id="playHits"></span></p>
             <p>Miss: <span id="playMiss"></span></p>
             <p>Remaining ships: <span id="playShips"></span></p>
 
@@ -33,7 +44,7 @@
         <div class="shipsBoard dropzone" dropzone="move"></div>
         <div id="computerInfos"></div>
 
-        <button id="fire">Fire! <i class="fas fa-bomb"></i> </button>
+        <button id="fire"><i class="fas fa-bomb"></i> </button>
         <button id="start">Start Playing!</button>
         <button id="rules">Rules</button>
     </div>
