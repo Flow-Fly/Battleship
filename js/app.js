@@ -3,7 +3,6 @@ import { Ship, BattleShips, Field } from "../modules/classes.js";
 const playerBoard = document.querySelector(".playerBoard");
 const shipsBoard = document.querySelector(".shipsBoard");
 const start = document.getElementById("start");
-const recap = document.querySelector(".recap");
 const randomBtn = document.getElementById("randomizer");
 const fireBtn = document.getElementById("fire");
 const infos = document.getElementById("computerInfos");
@@ -39,6 +38,7 @@ let gameState = {
 stroboscopic()
 
 function gameInitialisation() {
+  infos.innerHTML = ''
   gameState = {
     turn: 1,
     playerHits: 0,
@@ -46,6 +46,7 @@ function gameInitialisation() {
     playerMiss: 0,
     computerMiss: 0,
   };
+  updateGSandRecap()
   
   gameSetup();
   generateInventory();
@@ -108,9 +109,11 @@ function gameSetup() {
 
   generateShips(playerShips);
   generateShips(computerShips);
+  
 
   randomlyPlaceShips(computerShips, computerField);
-
+  //Cheat engine :
+  console.log(computerField.field)
   randomBtn.onclick = () => {
     playerField.createField();
     shipsBoard.querySelectorAll(".ship").forEach((ship) => {
@@ -146,8 +149,9 @@ function generateShips(str) {
 
 function mainGame() {
   const turn = gameState.turn % 2 === 0 ? "computer" : "player";
-  console.log(turn);
+  //console.log(turn);
   infos.innerHTML += `<br><p>Turn ${gameState.turn}:</p><h3>It's ${turn}'s turn!</h3><br>`;
+  infos.scrollTop = infos.scrollHeight
   if (turn === "player") {
     pickShots();
     waitForX(playerShips.army.length, turn, computerField.field);
@@ -286,51 +290,55 @@ function fire(turn, field, shots) {
   }
   endTurn(turn);
 }
-
-function endTurn(turn) {
+function updateGSandRecap() {
   gameState.playerHits = playerBoard.querySelectorAll(".hit").length;
   gameState.computerHits = shipsBoard.querySelectorAll(".hit").length;
   gameState.playerMiss = playerBoard.querySelectorAll(".miss").length;
   gameState.computerMiss = shipsBoard.querySelectorAll(".miss").length;
-  turn === "player"
-    ? sinkShip(turn, computerShips)
-    : sinkShip(turn, playerShips);
   compHits.textContent = gameState.computerHits;
   compMiss.textContent = gameState.computerMiss;
   compShips.textContent = computerShips.army.length;
   playHits.textContent = gameState.playerHits;
   playMiss.textContent = gameState.playerMiss;
   playShips.textContent = playerShips.army.length;
-  infos.scrollTop = infos.scrollHeight
-  console.log('Computer avaiable moves: ',computerField.randomPossibleMoves)
-  if (endgame()) {
+}
+function endTurn(turn) {
+  updateGSandRecap()
+  turn === "player"
+    ? sinkShip(turn, computerShips)
+    : sinkShip(turn, playerShips);
+ 
+  if (computerShips.army.length === 0 || playerShips.army.length === 0) {
     reset(turn);
   }
   gameState.turn += 1;
   mainGame();
 }
 
-function endgame() {
-  return gameState.computerHits === 17 || gameState.playerHits === 17;
-}
-
 function reset(turn) {
+  console.log('In the function')
   mainBlur.classList.toggle('blur')
-  mainBlur.querySelector('.won').visibility = 'visible'
-  mainBlur.querySelector('.won .winnerTurn').textContent = turn
+  document.querySelector('.won').style.visibility = 'visible'
+  document.querySelector('.won .winnerTurn').textContent = turn
   if (turn === 'player') {
     mainBlur.querySelector('.won .messageEnd').textContent = 'Congratulations!\nDo you want to play again?'
   } else {
     mainBlur.querySelector('.won .messageEnd').textContent = 'Better luck next time!'
   }
   replayGame.onclick = () => {
-    mainBlur.querySelector('.won').visibility = 'hidden'
+    mainBlur.querySelector('.won').style.visibility = 'hidden'
     replayGame.style.visibility = 'hidden'
     mainBlur.classList.toggle('blur')
     randomBtn.style.visibility = 'visible'
     startGame.style.visibility = 'visible'
     playerBoard.innerHTML = '';
     shipsBoard.innerHTML = '';
+    playerShips.reset()
+    computerShips.reset()
+    computerField.reset()
+    computerField.reset()
+
+
     gameInitialisation();
   }
 }
@@ -409,7 +417,7 @@ function itsAShip(turn, cell, field, army) {
   if (field[x][y].ship) {
     const name = field[x][y].name;
     let ship = army.find((ship) => ship.name === name);
-    console.log('player: ',turn,' Field: ', field[x][y], ' ship: ', ship)
+    //console.log('player: ',turn,' Field: ', field[x][y], ' ship: ', ship)
     ship.health -= 1;
     infos.innerHTML += `<p>${turn} hit ${ship.name} on cell ${x} - ${y}<p/>`;
     if (turn === 'computer') {

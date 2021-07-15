@@ -24,6 +24,10 @@ export class BattleShips {
   totalPower() {
       return this.army.reduce((acc, val) => acc + val.power ,0)
   }
+  reset() {
+    this.army = []
+    this.deadShips = []
+  }
 }
 
 
@@ -93,13 +97,11 @@ export class Field {
     return shots
   }
 
-  hunt() {
-
+  reset() {
+    this.moveMades = []
+    this.possibleHits = []
+    this.randomPossibleMoves = []
+    this.hits = []
   }
 
-  knowledgeCheck() {
-    if (this.hits.length > 1) {
-      
-    }
-  }
 }

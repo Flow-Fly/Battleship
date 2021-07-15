@@ -319,7 +319,7 @@ h1 {
     visibility: hidden;
 }
 
-#main .won {
+.won {
     position:absolute;
     display: flex;
     flex-direction: column;
