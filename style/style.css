@@ -254,6 +254,10 @@ h1 {
     text-align: center;
     font-size: 1.8em;
     cursor: pointer;
+    box-shadow:
+    0 0 15px 7.5px #fff,  /* inner white */
+    0 0 25px 15px #f0f, /* middle magenta */
+    0 0 35px 22.5px #0ff; /* outer cyan */
 }
 
 #fire {
@@ -310,6 +314,9 @@ h1 {
     transition: visibility 1s;
     visibility: visible;
 }
+#main.blur {
+    visibility: hidden;
+}
 .rules {
     display: flex;
     align-items: center;
@@ -325,6 +332,10 @@ h1 {
     height: auto;
     width: 33%;
     border:2px solid white;
+}
+
+.rules.display {
+    visibility:visible;
 }
 
 .rules > ul {

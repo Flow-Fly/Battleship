@@ -13,6 +13,9 @@ const compShips = document.getElementById("compShips");
 const playHits = document.getElementById("playHits");
 const playMiss = document.getElementById("playMiss");
 const playShips = document.getElementById("playShips");
+const rulesBtn = document.getElementById('rules');
+const rulesPage = document.querySelector('.rules')
+const mainBlur = document.getElementById('main')
 
 fireBtn.disabled = true;
 
@@ -21,6 +24,9 @@ const playerField = new Field();
 const computerShips = new BattleShips();
 const playerShips = new BattleShips();
 
+rulesBtn.onclick = () => {
+  rulesPage.classList.toggle('display')
+}
 
 let gameState = {
   turn: 1,
@@ -73,6 +79,11 @@ function stroboscopic(){
 
   start.onclick = () => {
     clearInterval(intervalId)
+    mainBlur.classList.toggle('blur')
+    start.style.visibility = 'hidden'
+    rulesBtn.style.visibility = 'hidden'
+    playerBoard.innerHTML = '';
+    shipsBoard.innerHTML = '';
     gameInitialisation();
   }
 }
