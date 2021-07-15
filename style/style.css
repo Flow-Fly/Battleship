@@ -31,6 +31,8 @@ body {
     justify-content: center;
     width: 100vw;
     height: 100vh;
+    background-image: url('../img/backscreen.png');
+    background-position: bottom;
 }
 
 h1 {
@@ -228,6 +230,10 @@ h1 {
     color: var(--orange);
     transition: all 400ms;
     cursor: pointer;
+}
+
+#start.display {
+    visibility: hidden;
 }
 
 #rules {

@@ -1,5 +1,6 @@
 import { Ship, BattleShips, Field } from "../modules/classes.js";
 
+//DOM Selectors
 const playerBoard = document.querySelector(".playerBoard");
 const shipsBoard = document.querySelector(".shipsBoard");
 const start = document.getElementById("start");
@@ -17,6 +18,7 @@ const rulesPage = document.querySelector('.rules');
 const mainBlur = document.getElementById('main');
 const startGame = document.getElementById('startGame');
 const replayGame = document.getElementById('replayGame')
+//Don't mind me!
 fireBtn.disabled = true;
 
 const computerField = new Field();
@@ -24,8 +26,10 @@ const playerField = new Field();
 const computerShips = new BattleShips();
 const playerShips = new BattleShips();
 
+//Main screen rules Button handling
 rulesBtn.onclick = () => {
   rulesPage.classList.toggle('display')
+  start.classList.toggle('display')
 }
 
 let gameState = {
@@ -35,9 +39,13 @@ let gameState = {
   playerMiss: 0,
   computerMiss: 0,
 };
+//Mainscreen
 stroboscopic()
 
+
+
 function gameInitialisation() {
+  //Reset the UI and reinitialise the gameState
   infos.innerHTML = ''
   gameState = {
     turn: 1,
