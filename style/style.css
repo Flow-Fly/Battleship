@@ -28,7 +28,9 @@ html {
 body {
     background-color: rgb(78, 78, 78);
     display: flex;    
-    flex-direction: column;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
 }
 
 h1 {
@@ -49,6 +51,8 @@ h1 {
     grid-template-columns: repeat(20, 1fr);
     grid-template-rows: repeat(7, 1fr);
     grid-gap: .5rem;
+    max-width: 1920px;
+    max-height: 1080px;
 }
  
 .recap {
