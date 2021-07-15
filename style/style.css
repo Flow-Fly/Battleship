@@ -31,10 +31,6 @@ body {
     flex-direction: column;
 }
 
-nav {
-    height: 75px;
-}
-
 h1 {
     z-index: 31;
     position: absolute;
@@ -51,7 +47,7 @@ h1 {
 .container-grid {
     display: grid;
     grid-template-columns: repeat(20, 1fr);
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-rows: repeat(7, 1fr);
     grid-gap: .5rem;
 }
  
@@ -59,7 +55,7 @@ h1 {
     background-color: rgb(32, 32, 32);
     color: rgb(0, 180, 0);
     border: 1px solid var(--Silver);
-    grid-area:5/14/7/17;
+    grid-area:6/14/8/17;
     font-size: .9em;
     padding: 1rem;
 }
@@ -85,7 +81,7 @@ h1 {
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
     border-radius: 33px;
-    grid-area: 2/4/8/11;
+    grid-area: 3/4/9/11;
     transition: all 500ms ease-in-out;
     column-gap: .2rem;
     row-gap: .2rem;
@@ -151,7 +147,7 @@ h1 {
     border-radius: 15px;
     background-color: var(--Silver);
     display: grid;
-    grid-area: 1/12/5/17;
+    grid-area: 2/12/6/17;
     padding: 1rem;
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
@@ -188,7 +184,7 @@ h1 {
 }
 
 #computerInfos {
-    grid-area: 2/17/6/21;
+    grid-area: 3/17/7/21;
     border-top: 2px solid var(--Silver);
     border-bottom: 2px solid var(--Silver);
     height:375px;
@@ -217,7 +213,7 @@ h1 {
     z-index: 31;
     background-color: var(--orange);
     color: var(--water-dark);
-    grid-area: 6/9/7/11;
+    grid-area: 7/9/8/11;
     align-self: center;
     justify-self: center;
 
@@ -234,7 +230,7 @@ h1 {
     z-index: 31;
     background-color: var(--water-dark);
     color: var(--honey);
-    grid-area: 6/12/7/13;
+    grid-area: 7/12/8/13;
     align-self: center;
     justify-self: center;
 
@@ -247,7 +243,7 @@ h1 {
     cursor: pointer;
 }
 #randomizer {
-    grid-area: 1/11/2/12;
+    grid-area: 2/11/3/12;
     align-self: center;
     justify-content: center;
     color: var(--orange);
@@ -265,7 +261,7 @@ h1 {
     box-shadow: 0px 0px 7px var(--honey);
 }
 #fire {
-    grid-area: 6/12/7/12;
+    grid-area: 7/12/8/12;
     align-self: start;
     padding: .5em 1em;
     cursor: pointer;
@@ -313,7 +309,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    grid-area: 1/1/10/21;
+    grid-area: 1/1/11/21;
     backdrop-filter: blur(8px);
     transition: visibility 1s;
     visibility: visible;
@@ -375,7 +371,7 @@ h1 {
 }
 
 #startGame {
-    grid-area: 3/11/4/12;
+    grid-area: 4/11/5/12;
     align-self: center;
     justify-content: center;
     color: var(--orange);
