@@ -1,5 +1,5 @@
 
-# Project Battleship
+# Project Battleship 🚢
 
 My first project during Ironhack bootcamp.
 
@@ -18,7 +18,11 @@ I decided to go for a boardgame (battleship, with a twist !) and not make it a t
 - Instead of shooting once per turn, you can target one cell per ships alive you own (starting at 5), making the first few turn quicker and progressively harder.
 
   
+## Issues
+
+Not responsive, not compatibe with mobile, can have targeting issues.
+  
 ## Demo
 
-https://flow-fly.github.io/IronHack-Project1/
+[BattleShip !](https://flow-fly.github.io/IronHack-Project1/)
   
